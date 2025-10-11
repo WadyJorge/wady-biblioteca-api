@@ -1,0 +1,40 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Compiled class files
+*.class
+
+# JVM crash logs
+hs_err_pid*
+replay_pid*
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# Package files #
+*.jar
+*.war
+*.nar
+*.ear
+*.tar.gz
+
+# INI and ICO files
+*.ini
+*.ico
+
+# Log files
+*.log
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+
+### VS Code ###
+.vscode/
