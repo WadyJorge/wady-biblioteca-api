@@ -8,6 +8,8 @@ public class BibliotecaApiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BibliotecaApiApplication.class, args);
+        System.out.println("API de Biblioteca iniciada com sucesso!");
+        System.out.println("Consulte http://localhost:8080/livros para acessar os livros.\n");
 	}
 
 }

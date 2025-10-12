@@ -1,0 +1,10 @@
+O Senhor dos Anéis,J.R.R. Tolkien,HarperCollins,Fantasia,1954,true
+Harry Potter e a Pedra Filosofal,J.K. Rowling,Rocco,Fantasia,1997,false
+Dom Quixote de la Mancha,Miguel de Cervantes,Penguin Classics,Clássico,1605,true
+O Guia do Mochileiro das Galáxias,Douglas Adams,Editora Arqueiro,Ficção Científica,1979,true
+Cem Anos de Solidão,Gabriel García Márquez,Record,Realismo Mágico,1967,false
+A Revolução dos Bichos,George Orwell,Companhia das Letras,Sátira Política,1945,true
+O Sol é para Todos,Harper Lee,José Olympio,Romance,1960,true
+Frankenstein,Mary Shelley,Darkside Books,Terror Gótico,1818,true
+O Grande Gatsby,F. Scott Fitzgerald,Scribner,Clássico Moderno,1925,false
+Fahrenheit 451,Ray Bradbury,Biblioteca Azul,Ficção Distópica,1953,true
