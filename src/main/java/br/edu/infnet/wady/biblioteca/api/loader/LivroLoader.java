@@ -53,7 +53,7 @@ public class LivroLoader implements ApplicationRunner {
                                 Boolean.valueOf(dados[5].trim()) // disponivel
                         );
 
-                        livroService.salvar(livro);
+                        livroService.criar(livro);
                         contador++;
                     }
                 }

@@ -44,16 +44,16 @@ public class BibliotecarioLoader implements ApplicationRunner {
 
                     String[] dados = linha.split(";");
 
-                    if (dados.length >= 8) {
+                    if (dados.length >= 14) {
                         Endereco endereco = new Endereco(
-                                null, // cep
-                                dados[6].trim(), // logradouro
-                                dados[7].trim(), // numero
-                                null, // complemento
-                                null, // bairro
-                                null, // cidade
-                                null, // estado
-                                null  // pais
+                                dados[6].trim(),  // cep
+                                dados[7].trim(),  // logradouro
+                                dados[8].trim(),  // numero
+                                dados[9].trim(),  // complemento
+                                dados[10].trim(), // bairro
+                                dados[11].trim(), // cidade
+                                dados[12].trim(), // estado
+                                dados[13].trim()  // pais
                         );
 
                         Bibliotecario bibliotecario = new Bibliotecario(
@@ -66,7 +66,7 @@ public class BibliotecarioLoader implements ApplicationRunner {
                                 endereco
                         );
 
-                        bibliotecarioService.salvar(bibliotecario);
+                        bibliotecarioService.criar(bibliotecario);
                         contador++;
                     }
                 }

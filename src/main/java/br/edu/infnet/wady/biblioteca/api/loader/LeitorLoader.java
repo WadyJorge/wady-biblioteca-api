@@ -53,7 +53,7 @@ public class LeitorLoader implements ApplicationRunner {
                                 true // ativo
                         );
 
-                        leitorService.salvar(leitor);
+                        leitorService.criar(leitor);
                         contador++;
                     }
                 }
