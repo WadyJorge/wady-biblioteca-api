@@ -18,7 +18,7 @@ public class LeitorService implements CrudService<Leitor, Long> {
     private final AtomicLong idGenerator = new AtomicLong(1);
 
     @Override
-    public Leitor salvar(Leitor leitor) {
+    public Leitor criar(Leitor leitor) {
         if (leitor.getId() == null) {
             leitor.setId(idGenerator.getAndIncrement());
         }
@@ -49,6 +49,17 @@ public class LeitorService implements CrudService<Leitor, Long> {
 
         leitor.setId(id);
         leitores.put(id, leitor);
+
+        return leitor;
+    }
+
+    public Leitor inativar(Long id) {
+        Leitor leitor = buscarPorId(id)
+                .orElseThrow(() -> new PessoaNaoEncontradaException("Leitor", id));
+
+        leitor.setAtivo(false);
+        leitores.put(id, leitor);
+
         return leitor;
     }
 

@@ -18,7 +18,7 @@ public class BibliotecarioService implements CrudService<Bibliotecario, Long> {
     private final AtomicLong idGenerator = new AtomicLong(1);
 
     @Override
-    public Bibliotecario salvar(Bibliotecario bibliotecario) {
+    public Bibliotecario criar(Bibliotecario bibliotecario) {
         if (bibliotecario.getId() == null) {
             bibliotecario.setId(idGenerator.getAndIncrement());
         }

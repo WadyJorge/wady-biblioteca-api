@@ -18,7 +18,7 @@ public class LivroService implements CrudService<Livro, Long> {
     private final AtomicLong idGenerator = new AtomicLong(1);
 
     @Override
-    public Livro salvar(Livro livro) {
+    public Livro criar(Livro livro) {
         if (livro.getId() == null) {
             livro.setId(idGenerator.getAndIncrement());
         }
