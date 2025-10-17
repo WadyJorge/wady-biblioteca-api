@@ -26,7 +26,7 @@ public class LivroLoader implements ApplicationRunner {
         System.out.println("\nIniciando carregamento de dados de livros...");
 
         try {
-            ClassPathResource resource = new ClassPathResource("livros.txt");
+            ClassPathResource resource = new ClassPathResource("loader/livros.txt");
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
                 String linha;
                 int contador = 0;

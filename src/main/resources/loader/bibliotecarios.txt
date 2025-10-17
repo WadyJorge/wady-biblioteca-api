@@ -1,0 +1,10 @@
+Ana Bezerra;ana.bezerra@biblioteca.com;111.222.333-44;(11) 98888-0001;BIB0001;3500.00;Rua das Flores;100
+Bruno Souza;bruno.souza@biblioteca.com;222.333.444-55;(21) 97777-0002;BIB0002;3650.00;Avenida Brasil;250
+Carla Mendes;carla.mendes@biblioteca.com;333.444.555-66;(31) 96666-0003;BIB0003;3720.00;Rua Primavera;45
+Diego Lima;diego.lima@biblioteca.com;444.555.666-77;(41) 95555-0004;BIB0004;3890.00;Rua das Acácias;78
+Eduarda Alves;eduarda.alves@biblioteca.com;555.666.777-88;(51) 94444-0005;BIB0005;4010.00;Rua Ipê Amarelo;12
+Fábio Rocha;fabio.rocha@biblioteca.com;666.777.888-99;(61) 93333-0006;BIB0006;4100.00;Alameda Santos;320
+Gabriela Nunes;gabriela.nunes@biblioteca.com;777.888.999-00;(71) 92222-0007;BIB0007;4250.00;Rua das Palmeiras;90
+Henrique Tavares;henrique.tavares@biblioteca.com;888.999.000-11;(81) 91111-0008;BIB0008;4380.00;Avenida Central;560
+Isabela Freitas;isabela.freitas@biblioteca.com;999.000.111-22;(85) 90000-0009;BIB0009;4475.00;Rua do Sol;210
+João Pedro;jp.silva@biblioteca.com;010.020.030-40;(19) 98888-0010;BIB0010;4590.00;Rua das Laranjeiras;33
