@@ -1,7 +1,7 @@
 package br.edu.infnet.wady.biblioteca.api.loader;
 
-import br.edu.infnet.wady.biblioteca.api.model.Livro;
-import br.edu.infnet.wady.biblioteca.api.service.LivroService;
+import br.edu.infnet.wady.biblioteca.api.model.Leitor;
+import br.edu.infnet.wady.biblioteca.api.service.LeitorService;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
@@ -14,21 +14,21 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Component
-@Order(3)
-public class LivroLoader implements ApplicationRunner {
+@Order(2)
+public class LeitorLoader implements ApplicationRunner {
 
-    private final LivroService livroService;
+    private final LeitorService leitorService;
 
-    public LivroLoader(LivroService livroService) {
-        this.livroService = livroService;
+    public LeitorLoader(LeitorService leitorService) {
+        this.leitorService = leitorService;
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        System.out.println("\nIniciando carregamento de dados de livros...");
+        System.out.println("\nIniciando carregamento de dados de leitores...");
 
         try {
-            ClassPathResource resource = new ClassPathResource("loader/livros.txt");
+            ClassPathResource resource = new ClassPathResource("loader/leitores.txt");
 
             try (BufferedReader reader = new BufferedReader(
                     new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
@@ -41,36 +41,36 @@ public class LivroLoader implements ApplicationRunner {
                         continue;
                     }
 
-                    String[] dados = linha.split(",");
+                    String[] dados = linha.split(";");
 
                     if (dados.length >= 6) {
-                        Livro livro = new Livro(
-                                dados[0].trim(), // titulo
-                                dados[1].trim(), // autor
-                                dados[2].trim(), // editora
-                                dados[3].trim(), // categoria
-                                Integer.valueOf(dados[4].trim()), // anoPublicacao
-                                Boolean.valueOf(dados[5].trim()) // disponivel
+                        Leitor leitor = new Leitor(
+                                dados[0].trim(), // nome
+                                dados[1].trim(), // email
+                                dados[2].trim(), // cpf
+                                dados[3].trim(), // telefone
+                                "LEIT" + String.format("%04d", contador + 1), // matricula
+                                true // ativo
                         );
 
-                        livroService.salvar(livro);
+                        leitorService.salvar(leitor);
                         contador++;
                     }
                 }
 
-                System.out.println(contador + " livros carregados com sucesso!");
+                System.out.println(contador + " leitores carregados com sucesso!");
             }
         } catch (Exception e) {
-            System.err.printf("Erro ao carregar dados de livros (%s): %s%n",
+            System.err.printf("Erro ao carregar dados de leitores (%s): %s%n",
                     e.getClass().getSimpleName(), e.getMessage());
         }
 
-        System.out.println("\nLista de livros carregados:");
+        System.out.println("\nLista de leitores carregados:");
         System.out.println("═════════════════════════════════════════════");
 
-        List<Livro> todosLivros = livroService.listarTodos();
-        for (Livro livro : todosLivros) {
-            System.out.println(livro);
+        List<Leitor> todosLeitores = leitorService.listarTodos();
+        for (Leitor leitor : todosLeitores) {
+            System.out.println(leitor);
         }
 
         System.out.println("═════════════════════════════════════════════");
