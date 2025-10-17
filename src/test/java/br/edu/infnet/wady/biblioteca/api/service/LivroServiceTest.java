@@ -24,15 +24,17 @@ class LivroServiceTest {
     }
 
     @Test
-    @DisplayName("Salvar deve gerar ID e persistir o livro em memória")
-    void salvarDeveGerarIdEGuardarLivro() {
+    @DisplayName("Criar deve gerar ID e persistir o livro em memória")
+    void criarDeveGerarIdEGuardarLivro() {
         LivroService service = new LivroService();
         Livro livro = novoLivro("Livro A");
 
-        Livro salvo = service.salvar(livro);
+        Livro salvo = service.criar(livro);
 
         assertNotNull(salvo.getId(), "ID deve ser gerado ao salvar");
+
         List<Livro> todos = service.listarTodos();
+
         assertEquals(1, todos.size());
         assertEquals(salvo.getId(), todos.getFirst().getId());
     }
@@ -41,7 +43,7 @@ class LivroServiceTest {
     @DisplayName("Buscar por ID existente deve retornar Optional preenchido")
     void buscarPorIdExistente() {
         LivroService service = new LivroService();
-        Livro salvo = service.salvar(novoLivro("Livro B"));
+        Livro salvo = service.criar(novoLivro("Livro B"));
 
         Optional<Livro> encontrado = service.buscarPorId(salvo.getId());
 
@@ -53,8 +55,8 @@ class LivroServiceTest {
     @DisplayName("Listar todos deve retornar todos os livros salvos")
     void listarTodos() {
         LivroService service = new LivroService();
-        service.salvar(novoLivro("L1"));
-        service.salvar(novoLivro("L2"));
+        service.criar(novoLivro("L1"));
+        service.criar(novoLivro("L2"));
 
         List<Livro> lista = service.listarTodos();
 
@@ -65,7 +67,7 @@ class LivroServiceTest {
     @DisplayName("Alterar deve substituir os dados quando o ID existir")
     void alterarExistente() {
         LivroService service = new LivroService();
-        Livro salvo = service.salvar(novoLivro("Antigo"));
+        Livro salvo = service.criar(novoLivro("Antigo"));
         Long id = salvo.getId();
 
         Livro novo = novoLivro("Novo");
@@ -89,7 +91,7 @@ class LivroServiceTest {
     @DisplayName("Excluir deve remover o livro e não encontrá-lo mais")
     void excluir() {
         LivroService service = new LivroService();
-        Livro salvo = service.salvar(novoLivro("Para excluir"));
+        Livro salvo = service.criar(novoLivro("Para excluir"));
         Long id = salvo.getId();
 
         service.excluir(id);
