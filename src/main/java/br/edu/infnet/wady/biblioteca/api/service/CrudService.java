@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface CrudService<T, ID> {
 
-    T salvar(T entity);
+    T criar(T entity);
     Optional<T> buscarPorId(ID id);
     List<T> listarTodos();
     T alterar(ID id, T entity);
