@@ -81,7 +81,7 @@ public class Livro {
     @Override
     public String toString() {
         return String.format(
-                "%5d | Título: %-50s | Autor: %-30s | Editora: %-30s | Categoria: %-30s | Ano: %04d | Disponível: %-3s",
+                "%5d | Título: %-50s | Autor: %-25s | Editora: %-25s | Categoria: %-25s | Ano: %4d | Disponível: %-3s",
                 id,
                 titulo,
                 autor,

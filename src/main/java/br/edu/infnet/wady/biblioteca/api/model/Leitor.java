@@ -48,7 +48,7 @@ public class Leitor extends Pessoa {
     @Override
     public String toString() {
         return String.format(
-                "%5d | Nome: %-30s | CPF: %-15s | Matrícula: %-15s | Ativo: %-5s",
+                "%5d | Nome: %-30s | CPF: %-14s | Matrícula: %-10s | Ativo: %-3s",
                 super.getId(),
                 super.getNome(),
                 super.getCpf(),

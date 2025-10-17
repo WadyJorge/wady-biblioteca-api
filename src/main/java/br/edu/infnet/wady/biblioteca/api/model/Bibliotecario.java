@@ -46,7 +46,7 @@ public class Bibliotecario extends Pessoa {
     @Override
     public String toString() {
         return String.format(
-                "%5d | Nome: %-30s | CPF: %-15s | Matrícula: %-15s | Salário: R$ %-10.2f | Logradouro: %-30s | Número: %-6s",
+                "%5d | Nome: %-30s | CPF: %-14s | Matrícula: %-10s | Salário: R$ %-10.2f | Logradouro: %-30s | Número: %-6s",
                 super.getId(),
                 super.getNome(),
                 super.getCpf(),
