@@ -23,7 +23,7 @@ O projeto está sendo construído de forma incremental:
 * [x] **Feature 1:** Configuração base do Spring Boot, entidade `Livro`, persistência em memória e `Loader` a partir de arquivo `.txt`.
 * [x] **Feature 2:** Expansão do domínio com **Herança** (`Pessoa`, `Leitor`, `Bibliotecario`) e **Associação** (`Endereco`). Implementação do **CRUD completo** (GET, POST, PUT, DELETE), método `PATCH` e tratamento de exceções customizadas.
 * [ ] **Feature 3:** Persistência de dados com banco de dados relacional (Spring Data JPA).
-* [ ] **Feature 4:** Implementação de validações (Bean Validation) e segurança.
+* [ ] **Feature 4:** Validação de dados (Bean Validation), tratamento global de exceções, relacionamentos complexos (One-to-Many) e Query Methods.
 
 ## 🧩 Arquitetura Aplicada
 
