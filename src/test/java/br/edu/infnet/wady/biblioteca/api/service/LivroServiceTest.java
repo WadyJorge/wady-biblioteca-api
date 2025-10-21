@@ -1,11 +1,11 @@
 package br.edu.infnet.wady.biblioteca.api.service;
 
+import br.edu.infnet.wady.biblioteca.api.exception.LivroNaoEncontradoException;
 import br.edu.infnet.wady.biblioteca.api.model.Livro;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -84,7 +84,7 @@ class LivroServiceTest {
         LivroService service = new LivroService();
         Livro novo = novoLivro("Qualquer");
 
-        assertThrows(NoSuchElementException.class, () -> service.alterar(999L, novo));
+        assertThrows(LivroNaoEncontradoException.class, () -> service.alterar(999L, novo));
     }
 
     @Test
@@ -96,7 +96,7 @@ class LivroServiceTest {
 
         service.excluir(id);
 
-        assertTrue(service.buscarPorId(id).isEmpty());
+        assertThrows(LivroNaoEncontradoException.class, () -> service.buscarPorId(id));
         assertEquals(0, service.listarTodos().size());
     }
 }
