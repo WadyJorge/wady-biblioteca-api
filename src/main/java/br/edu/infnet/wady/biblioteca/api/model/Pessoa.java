@@ -1,11 +1,31 @@
 package br.edu.infnet.wady.biblioteca.api.model;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
+@MappedSuperclass
 public abstract class Pessoa {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Nome é obrigatório")
+    @Column(nullable = false, length = 100)
     private String nome;
+
+    @NotBlank(message = "Email é obrigatório")
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
+
+    @NotBlank(message = "CPF é obrigatório")
+    @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}", message = "CPF inválido")
+    @Column(nullable = false, unique = true, length = 14)
     private String cpf;
+
+    @NotBlank(message = "Telefone é obrigatório")
+    @Column(nullable = false, length = 15)
     private String telefone;
 
     public Pessoa() {
@@ -61,7 +81,7 @@ public abstract class Pessoa {
     @Override
     public String toString() {
         return String.format(
-                "%5d | Nome: %-30s | Email: %-30s | CPF: %-15s | Telefone: %-15s",
+                "%5d | Nome: %-30s | Email: %-30s | CPF: %-14s | Telefone: %-15s",
                 id,
                 nome,
                 email,

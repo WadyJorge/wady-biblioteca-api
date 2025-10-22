@@ -1,11 +1,23 @@
 package br.edu.infnet.wady.biblioteca.api.model;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "leitores")
 public class Leitor extends Pessoa {
 
+    @NotBlank(message = "Matrícula é obrigatória")
+    @Column(nullable = false, unique = true, length = 20)
     private String matricula;
+
+    @NotNull(message = "Data de inscrição é obrigatória")
+    @Column(nullable = false)
     private LocalDate dataInscricao;
+
+    @NotNull(message = "Status ativo é obrigatório")
+    @Column(nullable = false)
     private Boolean ativo;
 
     public Leitor() {

@@ -1,13 +1,40 @@
 package br.edu.infnet.wady.biblioteca.api.model;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+
+@Entity
+@Table(name = "livros")
 public class Livro {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Título é obrigatório")
+    @Column(nullable = false, length = 200)
     private String titulo;
+
+    @NotBlank(message = "Autor é obrigatório")
+    @Column(nullable = false, length = 100)
     private String autor;
+
+    @NotBlank(message = "Editora é obrigatória")
+    @Column(nullable = false, length = 100)
     private String editora;
+
+    @NotBlank(message = "Categoria é obrigatória")
+    @Column(nullable = false, length = 50)
     private String categoria;
+
+    @NotNull(message = "Ano de publicação é obrigatório")
+    @Min(value = 1000, message = "Ano de publicação inválido")
+    @Max(value = 9999, message = "Ano de publicação inválido")
+    @Column(nullable = false)
     private Integer anoPublicacao;
+
+    @NotNull(message = "Disponibilidade é obrigatória")
+    @Column(nullable = false)
     private Boolean disponivel;
 
     public Livro() {

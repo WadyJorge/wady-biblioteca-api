@@ -1,9 +1,25 @@
 package br.edu.infnet.wady.biblioteca.api.model;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import java.math.BigDecimal;
+
+@Entity
+@Table(name = "bibliotecarios")
 public class Bibliotecario extends Pessoa {
 
+    @NotBlank(message = "Matrícula é obrigatória")
+    @Column(nullable = false, unique = true, length = 20)
     private String matricula;
-    private Double salario;
+
+    @NotNull(message = "Salário é obrigatório")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Salário deve ser maior que zero")
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal salario;
+
+    @NotNull(message = "Endereço é obrigatório")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "endereco_id", nullable = false)
     private Endereco endereco;
 
     public Bibliotecario() {
@@ -15,7 +31,7 @@ public class Bibliotecario extends Pessoa {
         super(nome, email, cpf, telefone);
 
         this.matricula = matricula;
-        this.salario = salario;
+        this.salario = BigDecimal.valueOf(salario);
         this.endereco = endereco;
     }
 
@@ -27,11 +43,11 @@ public class Bibliotecario extends Pessoa {
         this.matricula = matricula;
     }
 
-    public Double getSalario() {
+    public BigDecimal getSalario() {
         return salario;
     }
 
-    public void setSalario(Double salario) {
+    public void setSalario(BigDecimal salario) {
         this.salario = salario;
     }
 
