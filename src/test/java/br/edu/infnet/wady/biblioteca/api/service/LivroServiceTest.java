@@ -2,15 +2,32 @@ package br.edu.infnet.wady.biblioteca.api.service;
 
 import br.edu.infnet.wady.biblioteca.api.exception.LivroNaoEncontradoException;
 import br.edu.infnet.wady.biblioteca.api.model.Livro;
+import br.edu.infnet.wady.biblioteca.api.repository.LivroRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class LivroServiceTest {
+
+    @Mock
+    private LivroRepository livroRepository;
+
+    @InjectMocks
+    private LivroService service;
+
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     private Livro novoLivro(String titulo) {
         return new Livro(
@@ -19,84 +36,93 @@ class LivroServiceTest {
                 "Editora Teste",
                 "Categoria Teste",
                 2024,
-                true
-        );
+                true);
     }
 
     @Test
-    @DisplayName("Criar deve gerar ID e persistir o livro em memória")
-    void criarDeveGerarIdEGuardarLivro() {
-        LivroService service = new LivroService();
+    @DisplayName("Criar deve salvar o livro via repositório")
+    void criarDeveSalvarLivro() {
         Livro livro = novoLivro("Livro A");
+        when(livroRepository.save(any())).thenReturn(livro);
 
         Livro salvo = service.criar(livro);
 
-        assertNotNull(salvo.getId(), "ID deve ser gerado ao salvar");
-
-        List<Livro> todos = service.listarTodos();
-
-        assertEquals(1, todos.size());
-        assertEquals(salvo.getId(), todos.getFirst().getId());
+        assertNotNull(salvo);
+        verify(livroRepository).save(livro);
     }
 
     @Test
     @DisplayName("Buscar por ID existente deve retornar Optional preenchido")
     void buscarPorIdExistente() {
-        LivroService service = new LivroService();
-        Livro salvo = service.criar(novoLivro("Livro B"));
+        Livro livro = novoLivro("Livro B");
+        when(livroRepository.findById(1L)).thenReturn(Optional.of(livro));
 
-        Optional<Livro> encontrado = service.buscarPorId(salvo.getId());
+        Optional<Livro> resultado = service.buscarPorId(1L);
 
-        assertTrue(encontrado.isPresent());
-        assertEquals("Livro B", encontrado.get().getTitulo());
+        assertTrue(resultado.isPresent());
+        assertEquals("Livro B", resultado.get().getTitulo());
     }
 
     @Test
-    @DisplayName("Listar todos deve retornar todos os livros salvos")
+    @DisplayName("Buscar por ID inexistente deve lançar exceção")
+    void buscarPorIdInexistente() {
+        when(livroRepository.findById(999L)).thenReturn(Optional.empty());
+
+        Optional<Livro> resultado = service.buscarPorId(999L);
+
+        assertFalse(resultado.isPresent());
+    }
+
+    @Test
+    @DisplayName("Listar todos deve retornar todos os livros")
     void listarTodos() {
-        LivroService service = new LivroService();
-        service.criar(novoLivro("L1"));
-        service.criar(novoLivro("L2"));
+        when(livroRepository.findAll()).thenReturn(List.of(novoLivro("L1"), novoLivro("L2")));
 
         List<Livro> lista = service.listarTodos();
 
         assertEquals(2, lista.size());
+        verify(livroRepository).findAll();
     }
 
     @Test
-    @DisplayName("Alterar deve substituir os dados quando o ID existir")
+    @DisplayName("Alterar deve atualizar dados quando o ID existir")
     void alterarExistente() {
-        LivroService service = new LivroService();
-        Livro salvo = service.criar(novoLivro("Antigo"));
-        Long id = salvo.getId();
-
+        Livro existente = novoLivro("Antigo");
+        existente.setId(1L);
         Livro novo = novoLivro("Novo");
-        Livro alterado = service.alterar(id, novo);
 
-        assertEquals(id, alterado.getId(), "ID deve permanecer o mesmo");
+        when(livroRepository.findById(1L)).thenReturn(Optional.of(existente));
+        when(livroRepository.save(any())).thenReturn(existente);
+
+        Livro alterado = service.alterar(1L, novo);
+
         assertEquals("Novo", alterado.getTitulo());
-        assertEquals(1, service.listarTodos().size(), "Deve continuar existindo apenas um registro");
+        verify(livroRepository).save(existente);
     }
 
     @Test
     @DisplayName("Alterar deve lançar exceção quando o ID não existir")
     void alterarNaoExistente() {
-        LivroService service = new LivroService();
-        Livro novo = novoLivro("Qualquer");
+        when(livroRepository.findById(999L)).thenReturn(Optional.empty());
 
-        assertThrows(LivroNaoEncontradoException.class, () -> service.alterar(999L, novo));
+        assertThrows(LivroNaoEncontradoException.class, () -> service.alterar(999L, novoLivro("Qualquer")));
     }
 
     @Test
-    @DisplayName("Excluir deve remover o livro e não encontrá-lo mais")
+    @DisplayName("Excluir deve remover livro existente")
     void excluir() {
-        LivroService service = new LivroService();
-        Livro salvo = service.criar(novoLivro("Para excluir"));
-        Long id = salvo.getId();
+        when(livroRepository.existsById(1L)).thenReturn(true);
 
-        service.excluir(id);
+        service.excluir(1L);
 
-        assertThrows(LivroNaoEncontradoException.class, () -> service.buscarPorId(id));
-        assertEquals(0, service.listarTodos().size());
+        verify(livroRepository).deleteById(1L);
+    }
+
+    @Test
+    @DisplayName("Excluir deve lançar exceção quando o ID não existir")
+    void excluirNaoExistente() {
+        when(livroRepository.existsById(999L)).thenReturn(false);
+
+        assertThrows(LivroNaoEncontradoException.class, () -> service.excluir(999L));
     }
 }

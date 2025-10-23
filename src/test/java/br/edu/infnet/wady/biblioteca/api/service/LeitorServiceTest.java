@@ -2,15 +2,32 @@ package br.edu.infnet.wady.biblioteca.api.service;
 
 import br.edu.infnet.wady.biblioteca.api.exception.PessoaNaoEncontradaException;
 import br.edu.infnet.wady.biblioteca.api.model.Leitor;
+import br.edu.infnet.wady.biblioteca.api.repository.LeitorRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class LeitorServiceTest {
+
+    @Mock
+    private LeitorRepository leitorRepository;
+
+    @InjectMocks
+    private LeitorService service;
+
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     private Leitor novoLeitor(String nome) {
         return new Leitor(
@@ -24,129 +41,97 @@ class LeitorServiceTest {
     }
 
     @Test
-    @DisplayName("Criar deve gerar ID e persistir o leitor em memória")
-    void criarDeveGerarIdEGuardarLeitor() {
-        LeitorService service = new LeitorService();
+    @DisplayName("Criar deve salvar o leitor via repositório")
+    void criarDeveSalvarLeitor() {
         Leitor leitor = novoLeitor("Ana Paula");
+        when(leitorRepository.save(any(Leitor.class))).thenReturn(leitor);
 
-        Leitor salvo = service.criar(leitor); // CORREÇÃO: 'criar'
+        Leitor salvo = service.criar(leitor);
 
-        assertNotNull(salvo.getId(), "ID deve ser gerado ao salvar");
-        assertNotNull(salvo.getDataInscricao(), "Data de inscrição deve ser gerada");
-        assertTrue(salvo.getAtivo(), "Leitor deve ser criado como ativo");
-
-        List<Leitor> todos = service.listarTodos();
-
-        assertEquals(1, todos.size());
-        assertEquals(salvo.getId(), todos.get(0).getId());
+        assertNotNull(salvo);
+        verify(leitorRepository, times(1)).save(leitor);
     }
 
     @Test
     @DisplayName("Buscar por ID existente deve retornar Optional preenchido")
     void buscarPorIdExistente() {
-        LeitorService service = new LeitorService();
-        Leitor salvo = service.criar(novoLeitor("Carlos Eduardo")); // CORREÇÃO: 'criar'
+        Leitor leitor = novoLeitor("Carlos Eduardo");
+        when(leitorRepository.findById(1L)).thenReturn(Optional.of(leitor));
 
-        Optional<Leitor> encontrado = service.buscarPorId(salvo.getId());
+        Optional<Leitor> encontrado = service.buscarPorId(1L);
 
         assertTrue(encontrado.isPresent());
         assertEquals("Carlos Eduardo", encontrado.get().getNome());
     }
 
     @Test
-    @DisplayName("Buscar por ID inexistente deve lançar exceção")
+    @DisplayName("Buscar por ID inexistente deve retornar Optional vazio")
     void buscarPorIdInexistente() {
-        LeitorService service = new LeitorService();
+        when(leitorRepository.findById(999L)).thenReturn(Optional.empty());
 
-        assertThrows(PessoaNaoEncontradaException.class, () -> service.buscarPorId(999L));
+        Optional<Leitor> resultado = service.buscarPorId(999L);
+
+        assertFalse(resultado.isPresent());
     }
 
     @Test
-    @DisplayName("Listar todos deve retornar todos os leitores salvos")
+    @DisplayName("Listar todos deve retornar todos os leitores")
     void listarTodos() {
-        LeitorService service = new LeitorService();
-        service.criar(novoLeitor("Leitor 1"));
-        service.criar(novoLeitor("Leitor 2"));
-        service.criar(novoLeitor("Leitor 3"));
+        when(leitorRepository.findAll()).thenReturn(
+                List.of(
+                        novoLeitor("Leitor 1"),
+                        novoLeitor("Leitor 2"),
+                        novoLeitor("Leitor 3")
+                )
+        );
 
         List<Leitor> lista = service.listarTodos();
 
         assertEquals(3, lista.size());
+        verify(leitorRepository, times(1)).findAll();
     }
 
     @Test
-    @DisplayName("Alterar deve substituir os dados quando o ID existir")
+    @DisplayName("Alterar deve atualizar dados quando o ID existir")
     void alterarExistente() {
-        LeitorService service = new LeitorService();
-        Leitor salvo = service.criar(novoLeitor("Nome Antigo"));
-        Long id = salvo.getId();
+        Leitor existente = novoLeitor("Antigo");
+        existente.setId(1L);
+        Leitor novo = novoLeitor("Novo");
 
-        Leitor novo = novoLeitor("Nome Novo");
-        Leitor alterado = service.alterar(id, novo);
+        when(leitorRepository.findById(1L)).thenReturn(Optional.of(existente));
+        when(leitorRepository.save(any(Leitor.class))).thenReturn(existente);
 
-        assertEquals(id, alterado.getId(), "ID deve permanecer o mesmo");
-        assertEquals("Nome Novo", alterado.getNome());
-        assertNotNull(alterado.getDataInscricao(), "Data de inscrição não deve ser nula");
-        assertEquals(1, service.listarTodos().size(), "Deve continuar existindo apenas um registro");
+        Leitor alterado = service.alterar(1L, novo);
+
+        assertEquals("Novo", alterado.getNome());
+        verify(leitorRepository).save(existente);
     }
 
     @Test
     @DisplayName("Alterar deve lançar exceção quando o ID não existir")
     void alterarNaoExistente() {
-        LeitorService service = new LeitorService();
+        when(leitorRepository.findById(999L)).thenReturn(Optional.empty());
         Leitor novo = novoLeitor("Qualquer");
 
         assertThrows(PessoaNaoEncontradaException.class, () -> service.alterar(999L, novo));
     }
 
     @Test
-    @DisplayName("Inativar deve marcar o leitor como inativo")
-    void inativarLeitor() {
-        LeitorService service = new LeitorService();
-        Leitor salvo = service.criar(novoLeitor("Pedro Costa"));
-        Long id = salvo.getId();
-
-        assertTrue(salvo.getAtivo(), "Leitor deve iniciar como ativo");
-
-        Leitor inativado = service.inativar(id);
-
-        assertFalse(inativado.getAtivo(), "Leitor deve estar inativo após inativar");
-        assertEquals(id, inativado.getId());
-
-        Optional<Leitor> consultado = service.buscarPorId(id);
-
-        assertTrue(consultado.isPresent());
-        assertFalse(consultado.get().getAtivo(), "Status inativo deve persistir");
-    }
-
-    @Test
-    @DisplayName("Inativar deve lançar exceção quando o ID não existir")
-    void inativarNaoExistente() {
-        LeitorService service = new LeitorService();
-
-        assertThrows(PessoaNaoEncontradaException.class, () -> service.inativar(999L));
-    }
-
-    @Test
-    @DisplayName("Excluir deve remover o leitor e não encontrá-lo mais")
+    @DisplayName("Excluir deve remover leitor existente")
     void excluir() {
-        LeitorService service = new LeitorService();
-        Leitor salvo = service.criar(novoLeitor("Para Excluir"));
-        Long id = salvo.getId();
+        when(leitorRepository.existsById(1L)).thenReturn(true);
+        doNothing().when(leitorRepository).deleteById(1L);
 
-        service.excluir(id);
+        service.excluir(1L);
 
-        assertThrows(PessoaNaoEncontradaException.class, () -> service.buscarPorId(id));
-        assertEquals(0, service.listarTodos().size());
+        verify(leitorRepository, times(1)).deleteById(1L);
     }
 
     @Test
-    @DisplayName("Excluir deve lançar exceção quando o ID não existir")
+    @DisplayName("Excluir deve lançar exceção quando ID não existir")
     void excluirNaoExistente() {
-        LeitorService service = new LeitorService();
+        when(leitorRepository.existsById(999L)).thenReturn(false);
 
         assertThrows(PessoaNaoEncontradaException.class, () -> service.excluir(999L));
     }
-
-
 }

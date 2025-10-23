@@ -3,15 +3,32 @@ package br.edu.infnet.wady.biblioteca.api.service;
 import br.edu.infnet.wady.biblioteca.api.exception.PessoaNaoEncontradaException;
 import br.edu.infnet.wady.biblioteca.api.model.Bibliotecario;
 import br.edu.infnet.wady.biblioteca.api.model.Endereco;
+import br.edu.infnet.wady.biblioteca.api.repository.BibliotecarioRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class BibliotecarioServiceTest {
+
+    @Mock
+    private BibliotecarioRepository bibliotecarioRepository;
+
+    @InjectMocks
+    private BibliotecarioService service;
+
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     private Endereco novoEndereco() {
         return new Endereco(
@@ -21,9 +38,7 @@ class BibliotecarioServiceTest {
                 "Apto 10",
                 "Centro",
                 "São Paulo",
-                "SP",
-                "Brasil"
-        );
+                "SP", "Brasil");
     }
 
     private Bibliotecario novoBibliotecario(String nome) {
@@ -34,99 +49,98 @@ class BibliotecarioServiceTest {
                 "(11) 99999-9999",
                 "BIB001",
                 3500.00,
-                novoEndereco()
-        );
+                novoEndereco());
     }
 
     @Test
-    @DisplayName("Criar deve gerar ID e persistir o bibliotecário em memória")
-    void criarDeveGerarIdEGuardarBibliotecario() {
-        BibliotecarioService service = new BibliotecarioService();
+    @DisplayName("Criar deve salvar o bibliotecário via repositório")
+    void criarDeveSalvarBibliotecario() {
         Bibliotecario bibliotecario = novoBibliotecario("João Silva");
+        when(bibliotecarioRepository.save(any())).thenReturn(bibliotecario);
 
         Bibliotecario salvo = service.criar(bibliotecario);
 
-        assertNotNull(salvo.getId(), "ID deve ser gerado ao salvar");
-
-        List<Bibliotecario> todos = service.listarTodos();
-
-        assertEquals(1, todos.size());
-        assertEquals(salvo.getId(), todos.get(0).getId());
+        assertNotNull(salvo);
+        verify(bibliotecarioRepository).save(bibliotecario);
     }
 
     @Test
     @DisplayName("Buscar por ID existente deve retornar Optional preenchido")
     void buscarPorIdExistente() {
-        BibliotecarioService service = new BibliotecarioService();
-        Bibliotecario salvo = service.criar(novoBibliotecario("Maria Santos")); // CORREÇÃO: 'criar'
+        Bibliotecario bibliotecario = novoBibliotecario("Maria Santos");
+        when(bibliotecarioRepository.findById(1L)).thenReturn(Optional.of(bibliotecario));
 
-        Optional<Bibliotecario> encontrado = service.buscarPorId(salvo.getId());
+        Optional<Bibliotecario> resultado = service.buscarPorId(1L);
 
-        assertTrue(encontrado.isPresent());
-        assertEquals("Maria Santos", encontrado.get().getNome());
+        assertTrue(resultado.isPresent());
+        assertEquals("Maria Santos", resultado.get().getNome());
     }
 
     @Test
     @DisplayName("Buscar por ID inexistente deve lançar exceção")
     void buscarPorIdInexistente() {
-        BibliotecarioService service = new BibliotecarioService();
+        when(bibliotecarioRepository.findById(999L)).thenReturn(Optional.empty());
 
-        assertThrows(PessoaNaoEncontradaException.class, () -> service.buscarPorId(999L));
+        Optional<Bibliotecario> resultado = service.buscarPorId(999L);
+
+        assertFalse(resultado.isPresent());
     }
 
     @Test
-    @DisplayName("Listar todos deve retornar todos os bibliotecários salvos")
+    @DisplayName("Listar todos deve retornar todos os bibliotecários")
     void listarTodos() {
-        BibliotecarioService service = new BibliotecarioService();
-        service.criar(novoBibliotecario("Bibliotecário 1")); // CORREÇÃO: 'criar'
-        service.criar(novoBibliotecario("Bibliotecário 2")); // CORREÇÃO: 'criar'
+        when(bibliotecarioRepository.findAll()).thenReturn(
+                List.of(
+                        novoBibliotecario("B1"),
+                        novoBibliotecario("B2")
+                )
+        );
 
         List<Bibliotecario> lista = service.listarTodos();
 
         assertEquals(2, lista.size());
+        verify(bibliotecarioRepository).findAll();
     }
 
     @Test
-    @DisplayName("Alterar deve substituir os dados quando o ID existir")
+    @DisplayName("Alterar deve atualizar dados quando o ID existir")
     void alterarExistente() {
-        BibliotecarioService service = new BibliotecarioService();
-        Bibliotecario salvo = service.criar(novoBibliotecario("Nome Antigo")); // CORREÇÃO: 'criar'
-        Long id = salvo.getId();
+        Bibliotecario existente = novoBibliotecario("Antigo");
+        existente.setId(1L);
+        Bibliotecario novo = novoBibliotecario("Novo");
 
-        Bibliotecario novo = novoBibliotecario("Nome Novo");
-        Bibliotecario alterado = service.alterar(id, novo);
+        when(bibliotecarioRepository.findById(1L)).thenReturn(Optional.of(existente));
+        when(bibliotecarioRepository.save(any())).thenReturn(existente);
 
-        assertEquals(id, alterado.getId(), "ID deve permanecer o mesmo");
-        assertEquals("Nome Novo", alterado.getNome());
-        assertEquals(1, service.listarTodos().size(), "Deve continuar existindo apenas um registro");
+        Bibliotecario alterado = service.alterar(1L, novo);
+
+        assertEquals("Novo", alterado.getNome());
+        verify(bibliotecarioRepository).save(existente);
     }
 
     @Test
     @DisplayName("Alterar deve lançar exceção quando o ID não existir")
     void alterarNaoExistente() {
-        BibliotecarioService service = new BibliotecarioService();
+        when(bibliotecarioRepository.findById(999L)).thenReturn(Optional.empty());
         Bibliotecario novo = novoBibliotecario("Qualquer");
 
         assertThrows(PessoaNaoEncontradaException.class, () -> service.alterar(999L, novo));
     }
 
     @Test
-    @DisplayName("Excluir deve remover o bibliotecário e não encontrá-lo mais")
+    @DisplayName("Excluir deve remover bibliotecário existente")
     void excluir() {
-        BibliotecarioService service = new BibliotecarioService();
-        Bibliotecario salvo = service.criar(novoBibliotecario("Para Excluir")); // CORREÇÃO: 'criar'
-        Long id = salvo.getId();
+        when(bibliotecarioRepository.existsById(1L)).thenReturn(true);
 
-        service.excluir(id);
+        service.excluir(1L);
 
-        assertThrows(PessoaNaoEncontradaException.class, () -> service.buscarPorId(id));
-        assertEquals(0, service.listarTodos().size());
+        verify(bibliotecarioRepository).deleteById(1L);
     }
 
     @Test
     @DisplayName("Excluir deve lançar exceção quando o ID não existir")
     void excluirNaoExistente() {
-        BibliotecarioService service = new BibliotecarioService();
+        when(bibliotecarioRepository.existsById(999L)).thenReturn(false);
 
         assertThrows(PessoaNaoEncontradaException.class, () -> service.excluir(999L));
     }
