@@ -3,7 +3,6 @@ package br.edu.infnet.wady.biblioteca.api.controller;
 import br.edu.infnet.wady.biblioteca.api.exception.PessoaNaoEncontradaException;
 import br.edu.infnet.wady.biblioteca.api.model.Bibliotecario;
 import br.edu.infnet.wady.biblioteca.api.service.BibliotecarioService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -55,7 +54,6 @@ public class BibliotecarioController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
         bibliotecarioService.excluir(id);
         return ResponseEntity.noContent().build();

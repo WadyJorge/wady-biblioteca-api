@@ -29,7 +29,7 @@ public class BibliotecarioService implements CrudService<Bibliotecario, Long> {
 
     @Override
     public List<Bibliotecario> listarTodos() {
-        return bibliotecarioRepository.findAll();
+        return bibliotecarioRepository.findAllWithEndereco();
     }
 
     @Override
