@@ -3,10 +3,11 @@ package br.edu.infnet.wady.biblioteca.api.controller;
 import br.edu.infnet.wady.biblioteca.api.exception.PessoaNaoEncontradaException;
 import br.edu.infnet.wady.biblioteca.api.model.Leitor;
 import br.edu.infnet.wady.biblioteca.api.service.LeitorService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -20,9 +21,16 @@ public class LeitorController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Leitor criar(@RequestBody Leitor leitor) {
-        return leitorService.criar(leitor);
+    public ResponseEntity<Leitor> criar(@RequestBody Leitor leitor) {
+        Leitor leitorCriado = leitorService.criar(leitor);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(leitorCriado.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(leitorCriado);
     }
 
     @GetMapping("/{id}")
@@ -33,12 +41,14 @@ public class LeitorController {
     }
 
     @GetMapping
-    public List<Leitor> listarTodos() {
-        return leitorService.listarTodos();
+    public ResponseEntity<List<Leitor>> listarTodos() {
+        List<Leitor> leitores = leitorService.listarTodos();
+        return ResponseEntity.ok(leitores);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Leitor> alterar(@PathVariable Long id, @RequestBody Leitor leitor) {
+    public ResponseEntity<Leitor> alterar(@PathVariable Long id,
+                                          @RequestBody Leitor leitor) {
         Leitor leitorAtualizado = leitorService.alterar(id, leitor);
         return ResponseEntity.ok(leitorAtualizado);
     }
@@ -50,8 +60,8 @@ public class LeitorController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void excluir(@PathVariable Long id) {
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
         leitorService.excluir(id);
+        return ResponseEntity.noContent().build();
     }
 }

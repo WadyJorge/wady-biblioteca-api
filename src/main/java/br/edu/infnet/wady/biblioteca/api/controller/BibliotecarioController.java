@@ -6,7 +6,9 @@ import br.edu.infnet.wady.biblioteca.api.service.BibliotecarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -20,9 +22,16 @@ public class BibliotecarioController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Bibliotecario criar(@RequestBody Bibliotecario bibliotecario) {
-        return bibliotecarioService.criar(bibliotecario);
+    public ResponseEntity<Bibliotecario> criar(@RequestBody Bibliotecario bibliotecario) {
+        Bibliotecario bibliotecarioCriado = bibliotecarioService.criar(bibliotecario);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(bibliotecarioCriado.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(bibliotecarioCriado);
     }
 
     @GetMapping("/{id}")
@@ -33,19 +42,22 @@ public class BibliotecarioController {
     }
 
     @GetMapping
-    public List<Bibliotecario> listarTodos() {
-        return bibliotecarioService.listarTodos();
+    public ResponseEntity<List<Bibliotecario>> listarTodos() {
+        List<Bibliotecario> bibliotecarios = bibliotecarioService.listarTodos();
+        return ResponseEntity.ok(bibliotecarios);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Bibliotecario> alterar(@PathVariable Long id, @RequestBody Bibliotecario bibliotecario) {
+    public ResponseEntity<Bibliotecario> alterar(@PathVariable Long id,
+                                                 @RequestBody Bibliotecario bibliotecario) {
         Bibliotecario bibliotecarioAtualizado = bibliotecarioService.alterar(id, bibliotecario);
         return ResponseEntity.ok(bibliotecarioAtualizado);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void excluir(@PathVariable Long id) {
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
         bibliotecarioService.excluir(id);
+        return ResponseEntity.noContent().build();
     }
 }
