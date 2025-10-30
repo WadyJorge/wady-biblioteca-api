@@ -3,6 +3,7 @@ package br.edu.infnet.wady.biblioteca.api.service;
 import br.edu.infnet.wady.biblioteca.api.exception.LivroNaoEncontradoException;
 import br.edu.infnet.wady.biblioteca.api.model.Livro;
 import br.edu.infnet.wady.biblioteca.api.repository.LivroRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,9 +25,16 @@ class LivroServiceTest {
     @InjectMocks
     private LivroService service;
 
+    private AutoCloseable mocks;
+
     @BeforeEach
     void setup() {
-        MockitoAnnotations.openMocks(this);
+        mocks = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        mocks.close();
     }
 
     private Livro novoLivro(String titulo) {
@@ -64,7 +72,7 @@ class LivroServiceTest {
     }
 
     @Test
-    @DisplayName("Buscar por ID inexistente deve lançar exceção")
+    @DisplayName("Buscar por ID inexistente deve retornar Optional vazio")
     void buscarPorIdInexistente() {
         when(livroRepository.findById(999L)).thenReturn(Optional.empty());
 

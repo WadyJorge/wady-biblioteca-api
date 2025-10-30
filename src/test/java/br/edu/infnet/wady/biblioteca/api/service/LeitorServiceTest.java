@@ -3,6 +3,7 @@ package br.edu.infnet.wady.biblioteca.api.service;
 import br.edu.infnet.wady.biblioteca.api.exception.PessoaNaoEncontradaException;
 import br.edu.infnet.wady.biblioteca.api.model.Leitor;
 import br.edu.infnet.wady.biblioteca.api.repository.LeitorRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,9 +25,16 @@ class LeitorServiceTest {
     @InjectMocks
     private LeitorService service;
 
+    private AutoCloseable mocks;
+
     @BeforeEach
     void setup() {
-        MockitoAnnotations.openMocks(this);
+        mocks = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        mocks.close();
     }
 
     private Leitor novoLeitor(String nome) {

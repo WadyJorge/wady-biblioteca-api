@@ -4,6 +4,7 @@ import br.edu.infnet.wady.biblioteca.api.exception.PessoaNaoEncontradaException;
 import br.edu.infnet.wady.biblioteca.api.model.Bibliotecario;
 import br.edu.infnet.wady.biblioteca.api.model.Endereco;
 import br.edu.infnet.wady.biblioteca.api.repository.BibliotecarioRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,9 +27,16 @@ class BibliotecarioServiceTest {
     @InjectMocks
     private BibliotecarioService service;
 
+    private AutoCloseable mocks;
+
     @BeforeEach
     void setup() {
-        MockitoAnnotations.openMocks(this);
+        mocks = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        mocks.close();
     }
 
     private Endereco novoEndereco() {
@@ -48,7 +57,7 @@ class BibliotecarioServiceTest {
                 "123.456.789-00",
                 "(11) 99999-9999",
                 "BIB001",
-                3500.00,
+                new BigDecimal("3500.00"),
                 novoEndereco());
     }
 
@@ -77,10 +86,9 @@ class BibliotecarioServiceTest {
     }
 
     @Test
-    @DisplayName("Buscar por ID inexistente deve lançar exceção")
+    @DisplayName("Buscar por ID inexistente deve retornar Optional vazio")
     void buscarPorIdInexistente() {
         when(bibliotecarioRepository.findById(999L)).thenReturn(Optional.empty());
-
         Optional<Bibliotecario> resultado = service.buscarPorId(999L);
 
         assertFalse(resultado.isPresent());
@@ -89,7 +97,7 @@ class BibliotecarioServiceTest {
     @Test
     @DisplayName("Listar todos deve retornar todos os bibliotecários")
     void listarTodos() {
-        when(bibliotecarioRepository.findAll()).thenReturn(
+        when(bibliotecarioRepository.findAllWithEndereco()).thenReturn(
                 List.of(
                         novoBibliotecario("B1"),
                         novoBibliotecario("B2")
@@ -99,7 +107,7 @@ class BibliotecarioServiceTest {
         List<Bibliotecario> lista = service.listarTodos();
 
         assertEquals(2, lista.size());
-        verify(bibliotecarioRepository).findAll();
+        verify(bibliotecarioRepository).findAllWithEndereco();
     }
 
     @Test
