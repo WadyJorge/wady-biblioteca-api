@@ -1,6 +1,6 @@
 # 📚 Biblioteca API
 
-![Status](https://img.shields.io/badge/status-em%20andamento-orange)
+![Status](https://img.shields.io/badge/status-concluído-blue)
 ![Java](https://img.shields.io/badge/Java-21%2B-red)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.6-green)
 
@@ -13,8 +13,7 @@ O objetivo é construir uma API para o gerenciamento de uma biblioteca, aplicand
 1. [Features Implementadas](#-features-implementadas)
 2. [Arquitetura Aplicada](#-arquitetura-aplicada)
 3. [Como Executar o Projeto](#-como-executar-o-projeto)
-4. [Endpoints da API](#-endpoints-da-api)
-5. [Autor](#-autor)
+4. [Autor](#-autor)
 
 ## ✨ Features Implementadas
 
@@ -23,7 +22,7 @@ O projeto está sendo construído de forma incremental:
 * [x] **Feature 1:** Configuração base do Spring Boot, entidade `Livro`, persistência em memória e `Loader` a partir de arquivo `.txt`.
 * [x] **Feature 2:** Expansão do domínio com **Herança** (`Pessoa`, `Leitor`, `Bibliotecario`) e **Associação** (`Endereco`). Implementação do **CRUD completo** (GET, POST, PUT, DELETE), método `PATCH` e tratamento de exceções customizadas.
 * [x] **Feature 3:** Persistência de dados com banco de dados relacional (Spring Data JPA).
-* [ ] **Feature 4:** Validação de dados (Bean Validation), tratamento global de exceções, relacionamentos complexos (One-to-Many) e Query Methods.
+* [x] **Feature 4:** Validação de dados (Bean Validation), tratamento global de exceções, relacionamentos complexos (One-to-Many) e Query Methods.
 
 ## 🧩 Arquitetura Aplicada
 
@@ -32,10 +31,11 @@ O projeto segue o padrão **arquitetura em camadas**, visando **separação de r
 ```
 biblioteca-api
 ├── controller/      → Exposição de endpoints REST
-├── exception/       → Classes de exceções customizadas
-├── loader           → Classes responsáveis pela carga inicial de dados
-├── model/           → Entidades de domínio (Livro, Leitor, Bibliotecario, etc.)
-└── service/         → Regras de negócio e validações       
+├── exception/       → Classes de exceções customizadas + GlobalExceptionHandler
+├── loader/          → Classes responsáveis pela carga inicial de dados
+├── model/           → Entidades de domínio (Livro, Leitor, Bibliotecario, Endereco, Emprestimo)
+├── repository/      → Interfaces de persistência (Spring Data JPA)
+└── service/         → Regras de negócio e validações
 ```
 
 ## ⚙️ Como Executar o Projeto
@@ -43,7 +43,7 @@ biblioteca-api
 ### 📋 Pré-requisitos
 
 * JDK **21+**
-* **Apache Maven** 
+* **Apache Maven**
 * **Git** (ou baixe o ZIP do repositório)
 
 ### 🚀 Passos para execução
@@ -77,42 +77,9 @@ biblioteca-api
    Os dados iniciais serão carregados automaticamente pelos *Loaders*.
    Utilize **Postman** ou **Insomnia** para testar os endpoints abaixo.
 
-## 🌐 Endpoints da API
-
-### 📖 Livros
-
-| Método   | Endpoint       | Descrição                    |
-| :------- | :------------- | :--------------------------- |
-| `GET`    | `/livros`      | Lista todos os livros.       |
-| `GET`    | `/livros/{id}` | Busca um livro por ID.       |
-| `POST`   | `/livros`      | Cadastra um novo livro.      |
-| `PUT`    | `/livros/{id}` | Atualiza um livro existente. |
-| `DELETE` | `/livros/{id}` | Exclui um livro por ID.      |
-
-### 👩‍🏫 Bibliotecários
-
-| Método   | Endpoint               | Descrição                            |
-| :------- | :--------------------- | :----------------------------------- |
-| `GET`    | `/bibliotecarios`      | Lista todos os bibliotecários.       |
-| `GET`    | `/bibliotecarios/{id}` | Busca um bibliotecário por ID.       |
-| `POST`   | `/bibliotecarios`      | Cadastra um novo bibliotecário.      |
-| `PUT`    | `/bibliotecarios/{id}` | Atualiza um bibliotecário existente. |
-| `DELETE` | `/bibliotecarios/{id}` | Exclui um bibliotecário por ID.      |
-
-### 🧑‍💼 Leitores
-
-| Método   | Endpoint                  | Descrição                                 |
-| :------- | :------------------------ | :---------------------------------------- |
-| `GET`    | `/leitores`               | Lista todos os leitores.                  |
-| `GET`    | `/leitores/{id}`          | Busca um leitor por ID.                   |
-| `POST`   | `/leitores`               | Cadastra um novo leitor.                  |
-| `PUT`    | `/leitores/{id}`          | Atualiza um leitor existente.             |
-| `PATCH`  | `/leitores/{id}/inativar` | Inativa um leitor (define `ativo=false`). |
-| `DELETE` | `/leitores/{id}`          | Exclui um leitor por ID.                  |
-
 ## 👨‍💻 Autor
 
-Desenvolvido e mantido por **Wady Jorge**
+Desenvolvido e mantido por **Wady Jorge**.
 
 Para dúvidas, sugestões ou feedback, entre em contato:
 

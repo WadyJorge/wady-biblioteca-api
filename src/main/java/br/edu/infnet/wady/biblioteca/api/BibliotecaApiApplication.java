@@ -11,7 +11,8 @@ public class BibliotecaApiApplication {
         System.out.println("Biblioteca API iniciada com sucesso!\n");
         System.out.println("Consulte http://localhost:8080/bibliotecarios para acessar os bibliotecários.");
         System.out.println("Consulte http://localhost:8080/leitores para acessar os leitores.");
-        System.out.println("Consulte http://localhost:8080/livros para acessar os livros.\n");
+        System.out.println("Consulte http://localhost:8080/livros para acessar os livros.");
+        System.out.println("Consulte http://localhost:8080/emprestimos para acessar os empréstimos.\n");
     }
 
 }

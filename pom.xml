@@ -10,7 +10,7 @@
     </parent>
     <groupId>br.edu.infnet</groupId>
     <artifactId>wady-biblioteca-api</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <name>wady-biblioteca-api</name>
     <description>Projeto da disciplina de Arquitetura Java. API para Gerenciamento de Biblioteca.</description>
     <url>https://github.com/seu-usuario/wady-biblioteca-api</url>
