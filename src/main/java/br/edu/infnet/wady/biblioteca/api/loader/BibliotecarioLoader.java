@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class BibliotecarioLoader implements ApplicationRunner {
                                 dados[2].trim(), // cpf
                                 dados[3].trim(), // telefone
                                 dados[4].trim(), // matricula
-                                Double.valueOf(dados[5].trim()), // salario
+                                new BigDecimal(dados[5].trim()), // salario
                                 endereco
                         );
 
@@ -78,7 +79,7 @@ public class BibliotecarioLoader implements ApplicationRunner {
                     e.getClass().getSimpleName(), e.getMessage());
         }
 
-        System.out.println("\nLista de bibliotecários carregados:");
+        System.out.println("\nLista completa de bibliotecários:");
         System.out.println("═════════════════════════════════════════════");
 
         List<Bibliotecario> todosBibliotecarios = bibliotecarioService.listarTodos();

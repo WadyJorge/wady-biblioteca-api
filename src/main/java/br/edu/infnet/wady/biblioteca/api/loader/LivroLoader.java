@@ -65,7 +65,7 @@ public class LivroLoader implements ApplicationRunner {
                     e.getClass().getSimpleName(), e.getMessage());
         }
 
-        System.out.println("\nLista de livros carregados:");
+        System.out.println("\nLista completa de livros:");
         System.out.println("═════════════════════════════════════════════");
 
         List<Livro> todosLivros = livroService.listarTodos();

@@ -49,8 +49,8 @@ public class LeitorLoader implements ApplicationRunner {
                                 dados[1].trim(), // email
                                 dados[2].trim(), // cpf
                                 dados[3].trim(), // telefone
-                                "LEIT" + String.format("%04d", contador + 1), // matricula
-                                true // ativo
+                                dados[4].trim(), // matricula
+                                Boolean.valueOf(dados[5].trim()) // ativo
                         );
 
                         leitorService.criar(leitor);
@@ -65,7 +65,7 @@ public class LeitorLoader implements ApplicationRunner {
                     e.getClass().getSimpleName(), e.getMessage());
         }
 
-        System.out.println("\nLista de leitores carregados:");
+        System.out.println("\nLista completa de leitores:");
         System.out.println("═════════════════════════════════════════════");
 
         List<Leitor> todosLeitores = leitorService.listarTodos();
