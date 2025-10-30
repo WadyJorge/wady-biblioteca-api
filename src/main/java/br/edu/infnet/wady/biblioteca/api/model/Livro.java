@@ -11,36 +11,46 @@ public class Livro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Título é obrigatório")
-    @Column(nullable = false, length = 200)
+    @NotBlank(message = "Título do livro é obrigatório")
+    @Size(min = 2, max = 200, message = "O título deve ter entre 2 e 200 caracteres")
     private String titulo;
 
-    @NotBlank(message = "Autor é obrigatório")
+    @NotBlank(message = "Autor do livro é obrigatório")
+    @Size(min = 3, max = 100, message = "O nome do autor deve ter entre 3 e 100 caracteres")
     @Column(nullable = false, length = 100)
     private String autor;
 
     @NotBlank(message = "Editora é obrigatória")
+    @Size(max = 100, message = "O nome da editora não pode exceder 100 caracteres")
     @Column(nullable = false, length = 100)
     private String editora;
 
     @NotBlank(message = "Categoria é obrigatória")
+    @Size(max = 50, message = "A categoria não pode exceder 50 caracteres")
     @Column(nullable = false, length = 50)
     private String categoria;
 
     @NotNull(message = "Ano de publicação é obrigatório")
-    @Min(value = 1000, message = "Ano de publicação inválido")
-    @Max(value = 9999, message = "Ano de publicação inválido")
+    @Min(value = 1000, message = "O ano de publicação deve ser maior ou igual a 1000")
+    @Max(value = 9999, message = "O ano de publicação deve ser menor ou igual a 9999")
     @Column(nullable = false)
     private Integer anoPublicacao;
 
-    @NotNull(message = "Disponibilidade é obrigatória")
+    @NotNull(message = "Status de disponibilidade é obrigatório")
     @Column(nullable = false)
     private Boolean disponivel;
 
     public Livro() {
     }
 
-    public Livro(String titulo, String autor, String editora, String categoria, Integer anoPublicacao, Boolean disponivel) {
+    public Livro(
+            String titulo,
+            String autor,
+            String editora,
+            String categoria,
+            Integer anoPublicacao,
+            Boolean disponivel
+    ) {
         this.titulo = titulo;
         this.autor = autor;
         this.editora = editora;

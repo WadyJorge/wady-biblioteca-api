@@ -9,11 +9,12 @@ import java.time.LocalDate;
 public class Leitor extends Pessoa {
 
     @NotBlank(message = "Matrícula é obrigatória")
+    @Size(min = 5, max = 20, message = "A matrícula deve ter entre 5 e 20 caracteres")
     @Column(nullable = false, unique = true, length = 20)
     private String matricula;
 
     @NotNull(message = "Data de inscrição é obrigatória")
-    @Column(nullable = false)
+    @PastOrPresent(message = "A data de inscrição não pode ser futura")
     private LocalDate dataInscricao;
 
     @NotNull(message = "Status ativo é obrigatório")
@@ -23,9 +24,14 @@ public class Leitor extends Pessoa {
     public Leitor() {
     }
 
-    public Leitor(String nome, String email, String cpf, String telefone,
-                  String matricula, Boolean ativo) {
-
+    public Leitor(
+            String nome,
+            String email,
+            String cpf,
+            String telefone,
+            String matricula,
+            Boolean ativo
+    ) {
         super(nome, email, cpf, telefone);
 
         this.matricula = matricula;
@@ -60,11 +66,12 @@ public class Leitor extends Pessoa {
     @Override
     public String toString() {
         return String.format(
-                "%5d | Nome: %-30s | CPF: %-14s | Matrícula: %-10s | Ativo: %-3s",
+                "%5d | Nome: %-30s | CPF: %-14s | Matrícula: %-10s | Status: %-3s",
                 super.getId(),
                 super.getNome(),
                 super.getCpf(),
                 matricula,
-                ativo ? "Sim" : "Não");
+                ativo ? "Ativo" : "Suspenso"
+        );
     }
 }

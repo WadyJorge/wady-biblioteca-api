@@ -3,6 +3,7 @@ package br.edu.infnet.wady.biblioteca.api.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "enderecos")
@@ -13,35 +14,42 @@ public class Endereco {
     private Long id;
 
     @NotBlank(message = "CEP é obrigatório")
-    @Pattern(regexp = "\\d{5}-\\d{3}", message = "CEP inválido")
+    @Pattern(regexp = "\\d{5}-\\d{3}", message = "O CEP deve estar no formato XXXXX-XXX")
     @Column(nullable = false, length = 9)
     private String cep;
 
     @NotBlank(message = "Logradouro é obrigatório")
+    @Size(min = 3, max = 100, message = "O logradouro deve ter entre 3 e 100 caracteres")
     @Column(nullable = false, length = 100)
     private String logradouro;
 
     @NotBlank(message = "Número é obrigatório")
+    @Size(min = 1, max = 10, message = "O número deve ter entre 1 e 10 caracteres")
     @Column(nullable = false, length = 10)
     private String numero;
 
+    @Size(max = 50, message = "O complemento não pode exceder 50 caracteres")
     @Column(length = 50)
     private String complemento;
 
     @NotBlank(message = "Bairro é obrigatório")
+    @Size(min = 2, max = 50, message = "O bairro deve ter entre 2 e 50 caracteres")
     @Column(nullable = false, length = 50)
     private String bairro;
 
     @NotBlank(message = "Cidade é obrigatória")
+    @Size(min = 2, max = 50, message = "A cidade deve ter entre 2 e 50 caracteres")
     @Column(nullable = false, length = 50)
     private String cidade;
 
     @NotBlank(message = "Estado é obrigatório")
-    @Pattern(regexp = "[A-Z]{2}", message = "Estado deve conter 2 letras maiúsculas")
+    @Pattern(regexp = "[A-Z]{2}",
+            message = "O estado deve conter exatamente 2 letras maiúsculas (ex: SP, RJ, MG)")
     @Column(nullable = false, length = 2)
     private String estado;
 
     @NotBlank(message = "País é obrigatório")
+    @Size(min = 2, max = 50, message = "O país deve ter entre 2 e 50 caracteres")
     @Column(nullable = false, length = 50)
     private String pais;
 
@@ -56,7 +64,8 @@ public class Endereco {
             String bairro,
             String cidade,
             String estado,
-            String pais) {
+            String pais
+    ) {
         this.cep = cep;
         this.logradouro = logradouro;
         this.numero = numero;
@@ -146,10 +155,11 @@ public class Endereco {
                 cep,
                 logradouro,
                 numero,
-                complemento,
+                complemento != null ? complemento : "N/A",
                 bairro,
                 cidade,
                 estado,
-                pais);
+                pais
+        );
     }
 }
